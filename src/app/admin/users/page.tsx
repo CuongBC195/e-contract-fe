@@ -472,7 +472,11 @@ export default function AdminUsersPage() {
             setEditModalOpen(false);
             setEditingUser(null);
           }}
-          onSubmit={(data) => editingUser && handleEdit(editingUser.id, data)}
+          onSubmit={async (data) => {
+            if (editingUser) {
+              await handleEdit(editingUser.id, data);
+            }
+          }}
           mode="edit"
           user={editingUser}
           saving={saving}

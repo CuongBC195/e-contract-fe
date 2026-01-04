@@ -259,7 +259,7 @@ export default function PDFViewKV({ receiptId, mode = 'view', onSave, onCancel }
         },
       });
 
-      if (response.success || response.statusCode === 409) { // 409 is ALREADY_SIGNED
+      if (response.statusCode === 200 || response.statusCode === 409) { // 409 is ALREADY_SIGNED
         showToast(`✓ Đã ký cho ${signer.role}`, 'success');
         // Reload receipt to get updated status
         const res = await fetch(`/api/receipts/get?id=${receiptId}`);

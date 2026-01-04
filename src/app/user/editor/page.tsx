@@ -166,7 +166,7 @@ function EditorContent() {
     router.push('/user/dashboard');
   };
 
-  const handleSavePDF = async (data: PDFEditorData) => {
+  const handleSavePDF = async (data: DocumentEditorData) => {
     try {
       const editId = searchParams.get('edit');
       if (!editId) {

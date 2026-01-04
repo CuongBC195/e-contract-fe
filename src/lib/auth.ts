@@ -61,21 +61,6 @@ export function clearAuthCookie() {
 }
 
 /**
- * Get token from request (for middleware)
- */
-export function getTokenFromRequest(request: NextRequest): string | null {
-  return request.cookies.get(COOKIE_NAME)?.value || null;
-}
-
-/**
- * Get token from cookies (for server components/API routes)
- */
-export async function getTokenFromCookies(): Promise<string | null> {
-  const cookieStore = await cookies();
-  return cookieStore.get(COOKIE_NAME)?.value || null;
-}
-
-/**
  * Verify authentication by calling backend /api/auth/me
  * Returns user info if authenticated, null otherwise
  */

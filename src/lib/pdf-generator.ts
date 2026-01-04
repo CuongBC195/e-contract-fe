@@ -5,6 +5,7 @@
  */
 
 import puppeteer from 'puppeteer-core';
+// @ts-ignore - chromium-min has no types
 import chromium from '@sparticuz/chromium-min';
 import type { Signer, SignatureData, SignaturePoint } from './kv';
 
@@ -47,11 +48,11 @@ async function getChromiumPath(): Promise<string> {
  * Convert SignatureData to inline SVG string
  */
 function signatureToSVG(signatureData: SignatureData, width = 200, height = 80): string {
-  if (signatureData.type === 'type' && signatureData.typedText) {
-    // Typed signature
+  if (signatureData.type === 'type' && signatureData.data) {
+    // Typed signature - data contains the typed text
     const fontFamily = signatureData.fontFamily || 'Dancing Script, cursive';
     const color = signatureData.color || '#000000';
-    const escapedText = signatureData.typedText
+    const escapedText = signatureData.data
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
@@ -62,16 +63,21 @@ function signatureToSVG(signatureData: SignatureData, width = 200, height = 80):
         ${escapedText}
       </text>
     </svg>`;
-  } else if (
-    signatureData.type === 'draw' &&
-    signatureData.signaturePoints &&
-    signatureData.signaturePoints.length > 0
-  ) {
-    // Drawn signature - convert points to SVG paths
-    const points = signatureData.signaturePoints;
+  } else if (signatureData.type === 'draw' && signatureData.data) {
+    // Drawn signature - data is JSON string of signaturePoints
+    let signaturePoints: SignaturePoint[][] = [];
+    try {
+      signaturePoints = JSON.parse(signatureData.data);
+    } catch (e) {
+      // If parsing fails, return placeholder
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" 
+              fill="#9ca3af" font-size="14" font-family="sans-serif">Chưa ký</text>
+      </svg>`;
+    }
     
     // 🔒 SECURITY: Filter out empty strokes (prevent invalid signatures)
-    const validStrokes = points.filter(stroke => stroke && stroke.length > 0);
+    const validStrokes = signaturePoints.filter(stroke => stroke && stroke.length > 0);
     
     if (validStrokes.length === 0) {
       // All strokes are empty - return "Chưa ký"
@@ -178,7 +184,7 @@ function generateHTMLTemplate(options: PDFGeneratorOptions): string {
             .map((signer) => {
               const signatureSVG = signer.signatureData
                 ? signatureToSVG(signer.signatureData)
-                : signatureToSVG({ type: 'draw', signaturePoints: null });
+                : signatureToSVG({ type: 'draw', data: '[]' });
 
               return `
                 <div class="signer-box" style="text-align: center;">

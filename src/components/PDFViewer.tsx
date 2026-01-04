@@ -188,7 +188,7 @@ export default function PDFViewer({
           setSignatureBlocks(
             signatureBlocks.map(b =>
               b.id === currentBlockId
-                ? { ...b, isSigned: true, signatureId: result.data?.signatureId }
+                ? { ...b, isSigned: true }
                 : b
             )
           );

@@ -403,7 +403,6 @@ export default function ContractViewKV({ receiptId }: ContractViewKVProps) {
       
       // Use html2canvas to capture full content including scrollable parts
       const canvas = await html2canvas(contractRef.current, {
-        scale: 2,
         backgroundColor: '#ffffff',
         useCORS: true,
         allowTaint: true,
@@ -412,7 +411,7 @@ export default function ContractViewKV({ receiptId }: ContractViewKVProps) {
         scrollY: 0,
         width: contractRef.current.scrollWidth,
         height: contractRef.current.scrollHeight,
-      });
+      } as any);
       const fullImageData = canvas.toDataURL('image/png', 1.0);
 
       const pdf = new jsPDF({

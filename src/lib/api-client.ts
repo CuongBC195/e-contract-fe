@@ -10,6 +10,8 @@ export interface ApiResponse<T> {
   message: string;
   data: T | null;
   errors?: string[] | null;
+  code?: string;
+  warning?: string;
   timestamp: string;
 }
 

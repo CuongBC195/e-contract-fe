@@ -1,4 +1,4 @@
-import Redis from 'ioredis';
+import Redis, { Redis as RedisClient } from 'ioredis';
 import { customAlphabet } from 'nanoid';
 
 // Custom ID generator với tiền tố 3DO-
@@ -9,9 +9,9 @@ export function createReceiptId(): string {
 }
 
 // Redis client singleton
-let redis: Redis | null = null;
+let redis: RedisClient | null = null;
 
-function getRedis(): Redis {
+function getRedis(): RedisClient {
   if (!redis) {
     const redisUrl = process.env.REDIS_URL;
     if (!redisUrl) {
@@ -130,6 +130,11 @@ export interface Receipt {
   viewedAt?: number; // NEW: Tracking when customer first viewed
   pdfUrl?: string; // NEW: URL của file PDF đã tạo (nếu có)
   userId?: string; // NEW: User who created this document (undefined = admin)
+  hashVerification?: {
+    isValid: boolean;
+    message?: string;
+    mismatchedSignatures?: string[];
+  };
 }
 
 // User interface

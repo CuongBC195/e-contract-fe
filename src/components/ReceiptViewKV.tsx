@@ -58,6 +58,7 @@ interface Receipt {
   // Support both old and new format
   info?: LegacyReceiptInfo;
   data?: ReceiptData;
+  document?: any; // Contract/Document format - should not exist for receipts
   // Signature base64 previews
   signatureNguoiNhan?: string;
   signatureNguoiGui?: string;
@@ -273,12 +274,11 @@ export default function ReceiptViewKV({ receiptId }: ReceiptViewKVProps) {
       try {
         console.log('Using html2canvas for Safari...');
         const canvas = await html2canvas(element, {
-          scale: 2,
           backgroundColor: '#ffffff',
           useCORS: true,
           allowTaint: true,
           logging: false,
-        });
+        } as any);
         return canvas.toDataURL('image/png', 1.0);
       } catch (error) {
         console.error('html2canvas error:', error);
@@ -304,12 +304,11 @@ export default function ReceiptViewKV({ receiptId }: ReceiptViewKVProps) {
       // Fallback to html2canvas
       try {
         const canvas = await html2canvas(element, {
-          scale: 2,
           backgroundColor: '#ffffff',
           useCORS: true,
           allowTaint: true,
           logging: false,
-        });
+        } as any);
         return canvas.toDataURL('image/png', 1.0);
       } catch (fallbackError) {
         console.error('html2canvas fallback error:', fallbackError);
