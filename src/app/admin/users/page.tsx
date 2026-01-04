@@ -143,7 +143,7 @@ export default function AdminUsersPage() {
     }
   };
 
-  const handleCreate = async (formData: { email: string; name: string; password: string; role: string }) => {
+  const handleCreate = async (formData: { email?: string; name?: string; password?: string; role?: string; emailVerified?: boolean }) => {
     setSaving(true);
     try {
       const res = await fetch('/api/admin/users', {
